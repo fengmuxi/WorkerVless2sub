@@ -166,22 +166,26 @@ async function 整理测速结果(tls) {
 
 			// 解构和验证CSV头部
 			const [header, ...dataRows] = rows;
-			const tlsIndex = header.findIndex(col => col.toUpperCase() === 'TLS');
-
-			if (tlsIndex === -1) {
-				throw new Error('CSV文件缺少必需的字段');
-			}
+			// const tlsIndex = header.findIndex(col => col.toUpperCase() === 'TLS');
+			//
+			// if (tlsIndex === -1) {
+			// 	throw new Error('CSV文件缺少必需的字段');
+			// }
 
 			return dataRows
 				.filter(row => {
-					const tlsValue = row[tlsIndex].toUpperCase();
+					// const tlsValue = row[tlsIndex].toUpperCase();
+					const tlsValue = false;
 					const speed = parseFloat(row[row.length - 1]);
 					return tlsValue === tls.toUpperCase() && speed > DLS;
 				})
 				.map(row => {
+					// const ipAddress = row[0];
+					// const port = row[1];
+					// const dataCenter = row[tlsIndex + remarkIndex];
 					const ipAddress = row[0];
-					const port = row[1];
-					const dataCenter = row[tlsIndex + remarkIndex];
+					const port = 2082;
+					const dataCenter = row[row.length - 1];
 					const formattedAddress = `${ipAddress}:${port}#${dataCenter}`;
 
 					// 处理代理IP池
