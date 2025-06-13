@@ -190,7 +190,7 @@ async function 整理测速结果(tls) {
 
 					// 处理代理IP池
 					if (csvUrl.includes('proxyip=true') &&
-						row[tlsIndex].toUpperCase() === 'TRUE' &&
+						'FALSE' === 'TRUE' &&
 						!httpsPorts.includes(port)) {
 						proxyIPPool.push(`${ipAddress}:${port}`);
 					}
