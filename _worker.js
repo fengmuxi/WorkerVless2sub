@@ -45,7 +45,8 @@ let 网络备案 = `<a href='https://t.me/CMLiussss'>萌ICP备-20240707号</a>`;
 let 额外ID = '0';
 let 加密方式 = 'auto';
 let 网站图标, 网站头像, 网站背景, xhttp = '';
-async function 整理优选列表(api) {
+let userInfoUrl = 'vps.cdn.dwzynj.top:2086';
+async function 整理优选列表(api, host, subscription) {
 	if (!api || api.length === 0) return [];
 
 	let newapi = "";
@@ -123,10 +124,53 @@ async function 整理优选列表(api) {
 		clearTimeout(timeout);
 	}
 
-	const newAddressesapi = await 整理(newapi);
+	const userInfo = await 获取用户信息(host, subscription);
+
+	const newAddressesapi = await 整理(userInfo + newapi);
 
 	// 返回处理后的结果
 	return newAddressesapi;
+}
+
+async function 获取用户信息(host, subscription) {
+	if (!subscription || subscription.length === 0) return [];
+	let hostName = host;
+	let apiUrl = `http://${hostName}/json/${subscription}`;
+	console.warn('请求用户信息接口地址=>'+apiUrl)
+
+	let newapi = "";
+
+	// 创建一个AbortController对象，用于控制fetch请求的取消
+	const controller = new AbortController();
+
+	const timeout = setTimeout(() => {
+		controller.abort(); // 取消所有请求
+	}, 2000); // 2秒后触发
+
+	try {
+		// 使用Promise.allSettled等待所有API请求完成，无论成功或失败
+		// 对api数组进行遍历，对每个API地址发起fetch请求
+		const response = await fetch(apiUrl, {
+			method: 'get',
+			signal: controller.signal // 将AbortController的信号量添加到fetch请求中，以便于需要时可以取消请求
+		});
+
+		// 获取响应的内容
+		let text = await response.text()
+		console.warn('响应返回信息=>'+text)
+		let json = JSON.parse(text)
+
+		newapi = `${hostName}${`${json.remarks}` ? `#${json.remarks}` : '官方优选'}\n`;
+	} catch (error) {
+		console.error(error);
+	} finally {
+		// 无论成功或失败，最后都清除设置的超时定时器
+		clearTimeout(timeout);
+	}
+	console.warn('函数返回信息=>'+newapi)
+
+	// 返回处理后的结果
+	return newapi;
 }
 
 async function 整理测速结果(tls) {
@@ -476,7 +520,7 @@ export default {
 		subConfig = env.SUBCONFIG || subConfig;
 		FileName = env.SUBNAME || FileName;
 		socks5DataURL = env.SOCKS5DATA || socks5DataURL;
-		if (env.CMPROXYIPS) 匹配PROXYIP = await 整理(env.CMPROXYIPS);;
+		if (env.CMPROXYIPS) 匹配PROXYIP = await 整理(env.CMPROXYIPS);
 		if (env.CFPORTS) httpsPorts = await 整理(env.CFPORTS);
 		EndPS = env.PS || EndPS;
 		网站图标 = env.ICO ? `<link rel="icon" sizes="32x32" href="${env.ICO}">` : '';
@@ -488,9 +532,12 @@ export default {
 		网络备案 = env.BEIAN || env.BY || 网络备案;
 		const userAgentHeader = request.headers.get('User-Agent');
 		const userAgent = userAgentHeader ? userAgentHeader.toLowerCase() : "null";
+		console.warn('url=>'+request.url)
 		const url = new URL(request.url);
 		const format = url.searchParams.get('format') ? url.searchParams.get('format').toLowerCase() : "null";
 		let host = "";
+		let hostName = env.USERINFOURL ? env.USERINFOURL : userInfoUrl;
+		let subscription = "";
 		let uuid = "";
 		let path = "";
 		let sni = "";
@@ -590,6 +637,7 @@ export default {
 			await sendMessage(`#获取订阅 ${FileName}`, request.headers.get('CF-Connecting-IP'), `UA: ${userAgentHeader}</tg-spoiler>\n域名: ${url.hostname}\n<tg-spoiler>入口: ${url.pathname + url.search}</tg-spoiler>`);
 		} else {
 			host = url.searchParams.get('host');
+			subscription = url.searchParams.get('subscription');
 			uuid = url.searchParams.get('uuid') || url.searchParams.get('password') || url.searchParams.get('pw');
 			path = url.searchParams.get('path');
 			sni = url.searchParams.get('sni') || host;
@@ -714,13 +762,13 @@ export default {
 				临时中转域名 = [...new Set(临时中转域名)];
 			}
 
-			const newAddressesapi = await 整理优选列表(addressesapi);
+			const newAddressesapi = await 整理优选列表(addressesapi, hostName, subscription);
 			const newAddressescsv = await 整理测速结果('TRUE');
 			const uniqueAddresses = Array.from(new Set(addresses.concat(newAddressesapi, newAddressescsv).filter(item => item && item.trim())));
 
 			let notlsresponseBody;
 			if ((noTLS == 'true' && 协议类型 == atob(`\u0056\u006b\u0078\u0046\u0055\u0031\u004d\u003d`)) || 协议类型 == 'VMess') {
-				const newAddressesnotlsapi = await 整理优选列表(addressesnotlsapi);
+				const newAddressesnotlsapi = await 整理优选列表(addressesnotlsapi, hostName, subscription);
 				const newAddressesnotlscsv = await 整理测速结果('FALSE');
 				const uniqueAddressesnotls = Array.from(new Set(addressesnotls.concat(newAddressesnotlsapi, newAddressesnotlscsv).filter(item => item && item.trim())));
 
