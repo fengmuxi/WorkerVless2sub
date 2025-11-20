@@ -706,12 +706,12 @@ export default {
 				path = (path[0] === '/') ? path : '/' + path;
 			}
 		}
-
 		if (host.toLowerCase().includes('notls') || host.toLowerCase().includes('worker') || host.toLowerCase().includes('trycloudflare')) noTLS = 'true';
 		noTLS = env.NOTLS || noTLS;
 		let subConverterUrl = generateFakeInfo(url.href, uuid, host);
 		if (userAgent.includes('subconverter')) alpn = '';
 		if (!userAgent.includes('subconverter') && MamaJustKilledAMan.some(PutAGunAgainstHisHeadPulledMyTriggerNowHesDead => userAgent.includes(PutAGunAgainstHisHeadPulledMyTriggerNowHesDead)) && MamaJustKilledAMan.length > 0) {
+			console.log('1');
 			const envKey = env.URL302 ? 'URL302' : (env.URL ? 'URL' : null);
 			if (envKey) {
 				const URLs = await 整理(env[envKey]);
@@ -727,8 +727,10 @@ export default {
 			}
 			return await subHtml(request);
 		} else if ((userAgent.includes('clash') || (format === 'clash' && !userAgent.includes('subconverter'))) && !userAgent.includes('nekobox') && !userAgent.includes('cf-workers-sub')) {
-			subConverterUrl = `https://${subConverter}/sub?target=clash&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+			console.log('2');
+			subConverterUrl = `http://${subConverter}/sub?target=clash&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
 		} else if ((userAgent.includes('sing-box') || userAgent.includes('singbox') || (format === 'singbox' && !userAgent.includes('subconverter'))) && !userAgent.includes('cf-workers-sub')) {
+			console.log('3');
 			if (协议类型 == 'VMess' && url.href.includes('path=')) {
 				const 路径参数前部分 = url.href.split('path=')[0];
 				const parts = url.href.split('path=')[1].split('&');
@@ -736,8 +738,9 @@ export default {
 				const 待处理路径参数 = url.href.split('path=')[1].split('&')[0] || '';
 				if (待处理路径参数.includes('%3F')) subConverterUrl = generateFakeInfo(路径参数前部分 + 'path=' + 待处理路径参数.split('%3F')[0] + '&' + 路径参数后部分, uuid, host);
 			}
-			subConverterUrl = `https://${subConverter}/sub?target=singbox&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+			subConverterUrl = `http://${subConverter}/sub?target=singbox&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
 		} else {
+			console.log('4');
 			if (host.includes('workers.dev')) {
 				if (临时中转域名接口) {
 					try {
@@ -1021,8 +1024,9 @@ export default {
 		}
 
 		try {
+			console.log('subConverterUrl=>'+subConverterUrl);
 			const subConverterResponse = await fetch(subConverterUrl);
-
+			console.log('subConverterResponse=>'+JSON.stringify(subConverterResponse));
 			if (!subConverterResponse.ok) {
 				throw new Error(`Error fetching subConverterUrl: ${subConverterResponse.status} ${subConverterResponse.statusText}`);
 			}
@@ -1042,6 +1046,7 @@ export default {
 				},
 			});
 		} catch (error) {
+			console.log(`Error: ${error.message}`);
 			return new Response(`Error: ${error.message}`, {
 				status: 500,
 				headers: { 'content-type': 'text/plain; charset=utf-8' },
