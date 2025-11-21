@@ -46,7 +46,7 @@ let 网络备案 = `<a href='https://t.me/CMLiussss'>萌ICP备-20240707号</a>`;
 let 额外ID = '0';
 let 加密方式 = 'auto';
 let 网站图标, 网站头像, 网站背景, xhttp = '';
-let userInfoUrl = 'vps.cdn.dwzynj.top:2086';
+let userInfoUrl = '3xui.api.dwzynj.top';
 async function 整理优选列表(api, hostName, subscription) {
 	if (!api || api.length === 0) return [];
 
@@ -125,9 +125,9 @@ async function 整理优选列表(api, hostName, subscription) {
 		clearTimeout(timeout);
 	}
 
-	const userInfo = await 获取用户信息(hostName, subscription);
+	// const userInfo = await 获取用户信息(hostName, subscription);
 
-	const newAddressesapi = await 整理(userInfo + newapi);
+	const newAddressesapi = await 整理(newapi);
 
 	// 返回处理后的结果
 	return newAddressesapi;
@@ -135,7 +135,7 @@ async function 整理优选列表(api, hostName, subscription) {
 
 async function 获取用户信息(hostName, subscription) {
 	if (!subscription || subscription.length === 0) return [];
-	let apiUrl = `http://${hostName}/json/${subscription}`;
+	let apiUrl = `https://${hostName}/json/${subscription}`;
 	console.warn('请求用户信息接口地址=>'+apiUrl)
 
 	let newapi = "";
@@ -145,7 +145,8 @@ async function 获取用户信息(hostName, subscription) {
 
 	const timeout = setTimeout(() => {
 		controller.abort(); // 取消所有请求
-	}, 2000); // 2秒后触发
+		return newapi;
+	}, 10000); // 2秒后触发
 
 	try {
 		// 使用Promise.allSettled等待所有API请求完成，无论成功或失败
