@@ -32,7 +32,7 @@ let FileName = '优选订阅生成器';
 let SUBUpdateTime = 6;
 let total = 24;
 let timestamp = 4102329600000;
-const regex = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[.*\]):?(\d+)?#?(.*)?$/;
+const regex = /^((?:\d{1,3}\.){3}\d{1,3}|\[[^\]]+\]):?(\d{1,5})?#?(.*?)(?:[;#|](.*))?$/;
 let fakeUserID;
 let fakeHostName;
 let httpsPorts = ["2053", "2083", "2087", "2096", "8443"];
@@ -309,12 +309,12 @@ async function nginx() {
 	<h1>Welcome to nginx!</h1>
 	<p>If you see this page, the nginx web server is successfully installed and
 	working. Further configuration is required.</p>
-	
+
 	<p>For online documentation and support please refer to
 	<a href="http://nginx.org/">nginx.org</a>.<br/>
 	Commercial support is available at
 	<a href="http://nginx.com/">nginx.com</a>.</p>
-	
+
 	<p><em>Thank you for using nginx.</em></p>
 	</body>
 	</html>
@@ -525,13 +525,13 @@ async function subHtml(request) {
 						--bg-color: #f5f6fa;
 						--card-bg: #ffffff;
 					}
-					
+
 					* {
 						box-sizing: border-box;
 						margin: 0;
 						padding: 0;
 					}
-					
+
 					body {
 						${网站背景}
 						background-size: cover;
@@ -546,12 +546,12 @@ async function subHtml(request) {
 						justify-content: center;
 						align-items: center;
 					}
-					
+
 					.container {
 						position: relative;
 						background: rgba(255, 255, 255, 0.7);
 						backdrop-filter: blur(10px);
-						-webkit-backdrop-filter: blur(10px); 
+						-webkit-backdrop-filter: blur(10px);
 						max-width: 600px;
 						width: 90%;
 						padding: 2rem;
@@ -566,25 +566,25 @@ async function subHtml(request) {
 						box-shadow: 0 15px 30px rgba(0,0,0,0.1),
 									inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 					}
-					
+
 					h1 {
 						text-align: center;
 						color: var(--primary-color);
 						margin-bottom: 2rem;
 						font-size: 1.8rem;
 					}
-					
+
 					.input-group {
 						margin-bottom: 1.5rem;
 					}
-					
+
 					label {
 						display: block;
 						margin-bottom: 0.5rem;
 						color: #555;
 						font-weight: 500;
 					}
-					
+
 					input {
 						width: 100%;
 						padding: 12px;
@@ -601,7 +601,7 @@ async function subHtml(request) {
 						box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15),
 									inset 0 2px 4px rgba(0, 0, 0, 0.03);
 					}
-					
+
 					button {
 						width: 100%;
 						padding: 12px;
@@ -615,16 +615,16 @@ async function subHtml(request) {
 						transition: all 0.3s ease;
 						margin-bottom: 1.5rem;
 					}
-					
+
 					button:hover {
 						background-color: var(--hover-color);
 						transform: translateY(-2px);
 					}
-					
+
 					button:active {
 						transform: translateY(0);
 					}
-					
+
 					#result {
 						background-color: #f8f9fa;
 						font-family: monospace;
@@ -724,7 +724,7 @@ async function subHtml(request) {
 						.container {
 							padding: 1.5rem;
 						}
-						
+
 						h1 {
 							font-size: 1.5rem;
 						}
@@ -828,9 +828,9 @@ async function subHtml(request) {
 						<label for="link">节点链接</label>
 						<input type="text" id="link" placeholder="请输入 VMess / VLESS / Trojan 链接">
 					</div>
-					
+
 					<button onclick="generateLink()">生成优选订阅</button>
-					
+
 					<div class="input-group">
 						<div style="display: flex; align-items: center;">
 							<label for="result">优选订阅</label>
@@ -849,19 +849,19 @@ async function subHtml(request) {
 					</div>
 					<div class="beian-info" style="text-align: center; font-size: 13px;">${网络备案}</div>
 				</div>
-	
+
 				<script>
 					function toggleTooltip(event) {
 						event.stopPropagation(); // 阻止事件冒泡
 						const tooltip = document.getElementById('infoTooltip');
 						tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
 					}
-					
+
 					// 点击页面其他区域关闭提示框
 					document.addEventListener('click', function(event) {
 						const tooltip = document.getElementById('infoTooltip');
 						const infoIcon = document.querySelector('.info-icon');
-						
+
 						if (!tooltip.contains(event.target) && !infoIcon.contains(event.target)) {
 							tooltip.style.display = 'none';
 						}
@@ -872,7 +872,7 @@ async function subHtml(request) {
 						if (!resultInput.value) {
 							return;
 						}
-						
+
 						resultInput.select();
 						navigator.clipboard.writeText(resultInput.value).then(() => {
 							const tooltip = document.createElement('div');
@@ -886,9 +886,9 @@ async function subHtml(request) {
 							tooltip.style.borderRadius = '4px';
 							tooltip.style.zIndex = '1000';
 							tooltip.textContent = '已复制到剪贴板';
-							
+
 							document.body.appendChild(tooltip);
-							
+
 							setTimeout(() => {
 								document.body.removeChild(tooltip);
 							}, 2000);
@@ -896,14 +896,14 @@ async function subHtml(request) {
 							alert('复制失败，请手动复制');
 						});
 					}
-	
+
 					function generateLink() {
 						const link = document.getElementById('link').value;
 						if (!link) {
 							alert('请输入节点链接');
 							return;
 						}
-						
+
 						let uuidType = 'uuid';
 						const 是特洛伊 = link.startsWith(atob(atob('ZEhKdmFtRnVPaTh2')));
 						if (是特洛伊) uuidType = 'password';
@@ -913,7 +913,7 @@ async function subHtml(request) {
 							if (isVMess){
 								const vmessLink = link.split('vmess://')[1];
 								const vmessJson = JSON.parse(atob(vmessLink));
-								
+
 								const host = vmessJson.host;
 								const uuid = vmessJson.id;
 								const path = vmessJson.path || '/';
@@ -923,17 +923,17 @@ async function subHtml(request) {
 								const alterId = vmessJson.aid || 0;
 								const security = vmessJson.scy || 'auto';
 								const domain = window.location.hostname;
-								
+
 								subLink = \`https://\${domain}/sub?host=\${host}&uuid=\${uuid}&path=\${encodeURIComponent(path)}&sni=\${sni}&type=\${type}&alpn=\${encodeURIComponent(alpn)}&alterid=\${alterId}&security=\${security}\`;
 							} else {
 								const uuid = link.split("//")[1].split("@")[0];
 								const search = link.split("?")[1].split("#")[0];
 								const domain = window.location.hostname;
-								
+
 								subLink = \`https://\${domain}/sub?\${uuidType}=\${uuid}&\${search}\`;
 							}
 							document.getElementById('result').value = subLink;
-	
+
 							// 更新二维码
 							const qrcodeDiv = document.getElementById('qrcode');
 							qrcodeDiv.innerHTML = '';
@@ -1151,15 +1151,15 @@ export default {
 			缺少必填参数：host 和 uuid
 			Missing required parameters: host and uuid
 			پارامترهای ضروری وارد نشده: هاست و یوآی‌دی
-			
+
 			${url.origin}/sub?host=[your host]&uuid=[your uuid]&path=[your path]
-			
-			
-			
-			
-			
-			
-				
+
+
+
+
+
+
+
 				${atob(atob('YUhSMGNITTZMeTluYVhSb2RXSXVZMjl0TDJOdGJHbDFMM2R2Y210bGNsWnNaWE56TW5OMVlnPT0='))}
 				`;
 
@@ -1254,10 +1254,19 @@ export default {
 				notlsresponseBody = uniqueAddressesnotls.map(address => {
 					let port = "-1";
 					let addressid = address;
+					let Host = host;
 
 					const match = addressid.match(regex);
 					if (!match) {
-						if (address.includes(':') && address.includes('#')) {
+						if (address.includes(':') && address.includes('#') && address.includes('|')) {
+							const parts = address.split(':');
+							address = parts[0];
+							const subParts = parts[1].split('#');
+							port = subParts[0];
+							const hostParts = subParts[1].split('|');
+							addressid = hostParts[0];
+							Host = hostParts[1];
+						} else if (address.includes(':') && address.includes('#')) {
 							const parts = address.split(':');
 							address = parts[0];
 							const subParts = parts[1].split('#');
@@ -1280,6 +1289,7 @@ export default {
 						address = match[1];
 						port = match[2] || port;
 						addressid = match[3] || address;
+						Host = match[4] || host;
 					}
 
 					const httpPorts = ["8080", "8880", "2052", "2082", "2086", "2095"];
@@ -1327,10 +1337,10 @@ export default {
 					}
 
 					if (协议类型 == 'VMess') {
-						const vmessLink = `vmess://${utf8ToBase64(`{"v":"2","ps":"${addressid + EndPS}","add":"${address}","port":"${port}","id":"${uuid}","aid":"${额外ID}","scy":"${加密方式}","net":"ws","type":"${type}","host":"${host}","path":"${path}","tls":"","sni":"","alpn":"${encodeURIComponent(alpn)}","fp":""}`)}`;
+						const vmessLink = `vmess://${utf8ToBase64(`{"v":"2","ps":"${addressid + EndPS}","add":"${address}","port":"${port}","id":"${uuid}","aid":"${额外ID}","scy":"${加密方式}","net":"ws","type":"${type}","host":"${Host || host}","path":"${path}","tls":"","sni":"","alpn":"${encodeURIComponent(alpn)}","fp":""}`)}`;
 						return vmessLink;
 					} else {
-						const 为烈士Link = `${atob(atob('ZG14bGMzTTZMeTg9')) + uuid}@${address}:${port}?security=&type=${type}&host=${host}&path=${encodeURIComponent(path)}&encryption=none#${encodeURIComponent(addressid + EndPS)}`;
+						const 为烈士Link = `${atob(atob('ZG14bGMzTTZMeTg9')) + uuid}@${address}:${port}?security=&type=${type}&host=${Host || host}&path=${encodeURIComponent(path)}&encryption=none#${encodeURIComponent(addressid + EndPS)}`;
 						return 为烈士Link;
 					}
 
