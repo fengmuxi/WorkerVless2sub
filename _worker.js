@@ -32,7 +32,7 @@ let FileName = '优选订阅生成器';
 let SUBUpdateTime = 6;
 let total = 24;
 let timestamp = 4102329600000;
-const regex = /^((?:\d{1,3}\.){3}\d{1,3}|\[[^\]]+\]):?(\d{1,5})?#?(.*?)(?:[;#|](.*))?$/;
+const regex = /^((?:\d{1,3}\.){3}\d{1,3}|\[[^\]]+\]|[a-zA-Z0-9.-]+):?(\d{1,5})?#?(.*?)(?:[;#|](.*))?$/;
 let fakeUserID;
 let fakeHostName;
 let httpsPorts = ["2053", "2083", "2087", "2096", "8443"];
@@ -66,7 +66,7 @@ async function 整理优选列表(api, hostName, subscription) {
 			method: 'get',
 			headers: {
 				'Accept': 'text/html,application/xhtml+xml,application/xml;',
-				'User-Agent': FileName + atob('IChodHRwczovL2dpdGh1Yi5jb20vY21saXUvV29ya2VyVmxlc3Myc3ViKQ==')
+				'User-Agent': encodeURIComponent(FileName) + atob('IChodHRwczovL2dpdGh1Yi5jb20vY21saXUvV29ya2VyVmxlc3Myc3ViKQ==')
 			},
 			signal: controller.signal // 将AbortController的信号量添加到fetch请求中，以便于需要时可以取消请求
 		}).then(response => response.ok ? response.text() : Promise.reject())));
@@ -462,7 +462,7 @@ async function getLink(重新汇总所有链接) {
 				method: 'get',
 				headers: {
 					'Accept': 'text/html,application/xhtml+xml,application/xml;',
-					'User-Agent': 'v2rayN/' + FileName + ' (https://github.com/cmliu/WorkerVless2sub)'
+					'User-Agent': 'v2rayN/' + encodeURIComponent(FileName) + ' (https://github.com/cmliu/WorkerVless2sub)'
 				},
 				signal: controller.signal // 将AbortController的信号量添加到fetch请求中
 			}).then(response => response.ok ? response.text() : Promise.reject())));
@@ -1252,6 +1252,7 @@ export default {
 				const newAddressesnotlscsv = await 整理测速结果('FALSE');
 				const uniqueAddressesnotls = Array.from(new Set(addressesnotls.concat(newAddressesnotlsapi, newAddressesnotlscsv).filter(item => item && item.trim())));
 
+				console.log(uniqueAddressesnotls)
 				notlsresponseBody = uniqueAddressesnotls.map(address => {
 					let port = "-1";
 					let addressid = address;
@@ -1499,7 +1500,7 @@ export default {
 		}
 
 		try {
-			const subConverterResponse = await fetch(subConverterUrl, { headers: { 'User-Agent': `v2rayN/${FileName + atob('IChodHRwczovL2dpdGh1Yi5jb20vY21saXUvRWRnZU9uZS1QYWdlcy1CZXN0SVAyU1VCKQ==')}` } });
+			const subConverterResponse = await fetch(subConverterUrl, { headers: { 'User-Agent': `v2rayN/${encodeURIComponent(FileName) + atob('IChodHRwczovL2dpdGh1Yi5jb20vY21saXUvRWRnZU9uZS1QYWdlcy1CZXN0SVAyU1VCKQ==')}` } });
 
 			if (!subConverterResponse.ok) {
 				throw new Error(`Error fetching subConverterUrl: ${subConverterResponse.status} ${subConverterResponse.statusText}`);
