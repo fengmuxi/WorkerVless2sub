@@ -32,7 +32,7 @@ let FileName = '优选订阅生成器';
 let SUBUpdateTime = 6;
 let total = 24;
 let timestamp = 4102329600000;
-const regex = /^((?:\d{1,3}\.){3}\d{1,3}|\[[^\]]+\]|[a-zA-Z0-9.-]+):?(\d{1,5})?#?(.*?)(?:[;#|](.*))?$/;
+const regex = /^((?:\d{1,3}\.){3}\d{1,3}|\[[^\]]+\]|[a-zA-Z0-9.-]+):?(\d{1,5})?#?(.*?)(?:[#](.*))?$/;
 let fakeUserID;
 let fakeHostName;
 let httpsPorts = ["2053", "2083", "2087", "2096", "8443"];
@@ -1260,20 +1260,15 @@ export default {
 
 					const match = addressid.match(regex);
 					if (!match) {
-						if (address.includes(':') && address.includes('#') && address.includes('|')) {
-							const parts = address.split(':');
-							address = parts[0];
-							const subParts = parts[1].split('#');
-							port = subParts[0];
-							const hostParts = subParts[1].split('|');
-							addressid = hostParts[0];
-							Host = hostParts[1];
-						} else if (address.includes(':') && address.includes('#')) {
+						if (address.includes(':') && address.includes('#')) {
 							const parts = address.split(':');
 							address = parts[0];
 							const subParts = parts[1].split('#');
 							port = subParts[0];
 							addressid = subParts[1];
+							if (subParts.length > 2){
+								Host = subParts[2] || host;
+							}
 						} else if (address.includes(':')) {
 							const parts = address.split(':');
 							address = parts[0];
